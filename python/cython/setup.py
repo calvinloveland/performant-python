@@ -2,6 +2,6 @@ from setuptools import setup
 from Cython.Build import cythonize
 
 setup(
-    ext_modules = cythonize("cython_mandelbrot.pyx", annotate=True),
+    ext_modules=cythonize("cython_mandelbrot.py", annotate=True),
     zip_safe=False,
 )

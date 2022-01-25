@@ -99,3 +99,8 @@ def set_to_picture(mandelbrot_set_colors):
 if __name__ == '__main__':
     # set_to_picture(mandelbrot_iterations_to_colors(pure_python_generate_set()))
     set_to_picture(mandelbrot_iterations_to_colors(numba_jit_generate_set()))
+    m_set = numba_jit_generate_set()
+    print(m_set[500][500])
+    print(m_set[1000][1000])
+    print(m_set[750][750])
+    print(m_set[751][750])
