@@ -12,9 +12,7 @@ int **generate_set()
     int max_iterations = 1000;
 
     double x_step = double(x_max - x_min) / double(width);
-    std::cout << "x_step: " << x_step << std::endl;
     double y_step = double(y_max - y_min) / double(height);
-    std::cout << "y_step: " << y_step << std::endl;
 
     int **mandelbrot_set = new int *[height];
     for (int i = 0; i < height; i++)

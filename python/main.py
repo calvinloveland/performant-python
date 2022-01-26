@@ -1,19 +1,24 @@
 import numpy
 import colorsys
+
 import numba
+
 
 def timer_decorator(func):
     """
     A decorator for timing functions.
     """
     import time
+
     def wrapper():
         start = time.time()
         value = func()
         end = time.time()
-        print("Time taken for function {}: {:0.3f}".format(func.__name__,end - start))
+        print("Time taken for function {}: {:0.3f}".format(func.__name__, end - start))
         return value
+
     return wrapper
+
 
 @timer_decorator
 def pure_python_generate_set():
@@ -42,6 +47,7 @@ def pure_python_generate_set():
 
             mandelbrot_set[y, x] = iteration
     return mandelbrot_set
+
 
 @timer_decorator
 @numba.jit(nopython=True)
@@ -72,17 +78,18 @@ def numba_jit_generate_set():
             mandelbrot_set[y, x] = iteration
     return mandelbrot_set
 
+
 def mandelbrot_iterations_to_colors(iterations_array):
-    height,width = iterations_array.shape
-    colors = numpy.zeros((height,width,3))
+    height, width = iterations_array.shape
+    colors = numpy.zeros((height, width, 3))
     precision = numpy.amax(iterations_array)
     for x in range(height):
         for y in range(width):
-            color = (iterations_array[y,x] +1)/(precision + 1)
-            rgb = colorsys.hsv_to_rgb(color, (color/2 + 0.4 ), (color/2 + 0.4 ))
+            color = (iterations_array[y, x] + 1) / (precision + 1)
+            rgb = colorsys.hsv_to_rgb(color, (color / 2 + 0.4), (color / 2 + 0.4))
             if max(rgb) > 1:
                 print(rgb)
-            colors[y,x] = numpy.array(tuple(rgb))
+            colors[y, x] = numpy.array(tuple(rgb))
     return colors
 
 
@@ -91,16 +98,17 @@ def set_to_picture(mandelbrot_set_colors):
     Convert the mandelbrot set to a picture.
     """
     import matplotlib.pyplot as plt
+
     plt.imshow(mandelbrot_set_colors)
     plt.axis("off")
     plt.show()
 
 
-if __name__ == '__main__':
-    # set_to_picture(mandelbrot_iterations_to_colors(pure_python_generate_set()))
-    set_to_picture(mandelbrot_iterations_to_colors(numba_jit_generate_set()))
-    m_set = numba_jit_generate_set()
-    print(m_set[500][500])
-    print(m_set[1000][1000])
-    print(m_set[750][750])
-    print(m_set[751][750])
+if __name__ == "__main__":
+    set_to_picture(mandelbrot_iterations_to_colors(pure_python_generate_set()))
+    # set_to_picture(mandelbrot_iterations_to_colors(numba_jit_generate_set()))
+    # m_set = numba_jit_generate_set()
+    # print(m_set[500][500])
+    # print(m_set[1000][1000])
+    # print(m_set[750][750])
+    # print(m_set[751][750])
