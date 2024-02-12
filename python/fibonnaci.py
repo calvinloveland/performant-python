@@ -41,11 +41,11 @@ def matrix_exponentiation_fibonnaci(n):
         matrix = np.array([[1, 1], [1, 0]])
         return np.linalg.matrix_power(matrix, n - 1)[0][0]
     
-def time_function(f, n):
+def time_function_subsecond(f, n):
     import time
-    start = time.time()
+    start = time.perf_counter()
     f(n)
-    end = time.time()
+    end = time.perf_counter()
     return end - start
 
 def display_results(data, title, xlabel, ylabel, legend,loglog=False):
@@ -73,38 +73,10 @@ def display_results(data, title, xlabel, ylabel, legend,loglog=False):
 
 def main():
     import numpy as np
-    import sys
-
-    # Set the recursion limit to 1000000
-    sys.setrecursionlimit(1000000)
-
 
 
     # Plot the time taken for each function on a log-log scale
     # Display each graph on it's own before showing a combined graph
-
-    loop_input = [0,10,100,1000,1000000]
-    loop_timings = [time_function(loop_fibonnaci, i) for i in loop_input]
-    display_results([(loop_input, loop_timings)], 'Loop Fibonnaci', 'n', 'time', ['loop'])
-    recursive_input = [0,10, 20, 30,40]
-    recursive_timings = [time_function(recursive_fibonnaci, i) for i in recursive_input]
-    display_results([(recursive_input, recursive_timings)], 'Recursive Fibonnaci', 'n', 'time', ['recursive'])
-    memoized_input = [0, 10, 100, 1000, 2000]
-    memoized_timings = [time_function(memoized_fibonnaci, i) for i in memoized_input]
-    display_results([(memoized_input, memoized_timings)], 'Memoized Fibonnaci', 'n', 'time', ['memoized'])
-    closed_form_input = [0,10,100,1000,1000000]
-    closed_form_timings = [time_function(closed_form_fibonnaci, i) for i in closed_form_input]
-    display_results([(closed_form_input, closed_form_timings)], 'Closed Form Fibonnaci', 'n', 'time', ['closed form'])
-    matrix_exponentiation_input = [0,10,100,1000,1000000, 1000000000]
-    matrix_exponentiation_timings = [time_function(matrix_exponentiation_fibonnaci, i) for i in matrix_exponentiation_input]
-    display_results([(matrix_exponentiation_input, matrix_exponentiation_timings)], 'Matrix Exponentiation Fibonnaci', 'n', 'time', ['matrix exponentiation'])
-
-    display_results([(loop_input, loop_timings), (recursive_input, recursive_timings), (memoized_input, memoized_timings), (closed_form_input, closed_form_timings), (matrix_exponentiation_input, matrix_exponentiation_timings)], 'Fibonnaci', 'n', 'time', ['loop', 'recursive', 'memoized', 'closed form', 'matrix exponentiation'])
-    # display all results log-log scale
-    display_results([(loop_input, loop_timings), (recursive_input, recursive_timings), (memoized_input, memoized_timings), (closed_form_input, closed_form_timings), (matrix_exponentiation_input, matrix_exponentiation_timings)], 'Fibonnaci', 'n', 'time', ['loop', 'recursive', 'memoized', 'closed form', 'matrix exponentiation'], loglog=True)
-
-
-
 
 
 if __name__ == '__main__':
