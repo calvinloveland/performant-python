@@ -2,7 +2,8 @@ import numpy
 import colorsys
 
 import numba
-
+import os
+import multiprocessing
 
 def timer_decorator(func):
     """
@@ -19,6 +20,55 @@ def timer_decorator(func):
 
     return wrapper
 
+def mandelbrot_point(x, y):
+    """
+    Generate the mandelbrot set using an interative algorithm.
+    """
+    x_min, x_max = -2.0, 1.0
+    y_min, y_max = -1.0, 1.0
+    width, height = 2000, 2000
+    max_iterations = 1000
+
+    x_step = (x_max - x_min) / width
+    y_step = (y_max - y_min) / height
+
+    c = complex(x * x_step + x_min, y * y_step + y_min)
+    z = 0.0j
+    iteration = 0
+
+    while abs(z) < 2 and iteration < max_iterations:
+        z = z * z + c
+        iteration += 1
+
+    return iteration
+
+
+def mandelbrot_row(y):
+    """
+    Generate the mandelbrot set using an interative algorithm.
+    """
+    x_min, x_max = -2.0, 1.0
+    y_min, y_max = -1.0, 1.0
+    width, height = 2000, 2000
+    max_iterations = 1000
+
+    x_step = (x_max - x_min) / width
+    y_step = (y_max - y_min) / height
+
+    mandelbrot_row = numpy.zeros(width)
+
+    for x in range(width):
+        c = complex(x * x_step + x_min, y * y_step + y_min)
+        z = 0.0j
+        iteration = 0
+
+        while abs(z) < 2 and iteration < max_iterations:
+            z = z * z + c
+            iteration += 1
+
+        mandelbrot_row[x] = iteration
+
+    return mandelbrot_row
 
 @timer_decorator
 def pure_python_generate_set():
@@ -48,6 +98,28 @@ def pure_python_generate_set():
             mandelbrot_set[y, x] = iteration
     return mandelbrot_set
 
+
+@timer_decorator
+def multiprocessing_generate_set():
+    """
+    Generate the mandelbrot set using an interative algorithm.
+    """
+    width, height = 2000, 2000
+
+
+    process_count = os.cpu_count()
+    mandelbrot_set = numpy.zeros((height, width))
+
+    async_rows = []
+
+    with multiprocessing.Pool(process_count) as p:
+        for y in range(height):
+            async_rows.append(p.apply_async(mandelbrot_row, args=(y,)))
+        for y in range(height):
+            mandelbrot_set[y] = async_rows[y].get()
+
+    
+    return mandelbrot_set
 
 @timer_decorator
 @numba.jit(nopython=True)
@@ -106,6 +178,7 @@ def set_to_picture(mandelbrot_set_colors):
 
 if __name__ == "__main__":
     set_to_picture(mandelbrot_iterations_to_colors(pure_python_generate_set()))
+    set_to_picture(mandelbrot_iterations_to_colors(multiprocessing_generate_set()))
     # set_to_picture(mandelbrot_iterations_to_colors(numba_jit_generate_set()))
     # m_set = numba_jit_generate_set()
     # print(m_set[500][500])
